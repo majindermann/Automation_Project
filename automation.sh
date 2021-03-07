@@ -60,6 +60,7 @@ echo -e "Creating Tar in /tmp"
 tar -cf /tmp/${myname}-httpd-logs-${timestamp}.tar --absolute-names /var/log/apache2/*.log
 echo -e "Tar created successfully in /tmp......PASS\n"
 
+<<<<<<< HEAD
 #Sending file to S3 bucket from /tmp
 echo -e "Sending log tar to S3\n"
 aws s3 cp /tmp/${myname}-httpd-logs-${timestamp}.tar s3://${s3_bucket}/${myname}-httpd-logs-${timestamp}.tar
@@ -78,12 +79,33 @@ else
 	echo -e "Log Type\tTime Created\tType\tSize" > /var/www/html/inventory.html
 	echo -e "$FILE created \n"
 fi
+=======
+#Sending file to S3 bucket and removing fro /tmp
+echo -e "Sending log tar to S3\n"
+aws s3 cp /tmp/${myname}-httpd-logs-${timestamp}.tar s3://${s3_bucket}/${myname}-httpd-logs-${timestamp}.tar
+echo -e "\nTar log copied to S3.......PASS\n"
+#echo -e "All task completed. Exiting the script. Thank you !!!"
+#Checking if inventory.html is present in /var/www/html. If not create file with headers.
+
+FILE=inventory.html
+if [ -f /var/www/html/inventory.html ]
+then
+        echo "$FILE exist."
+else
+        echo -e "$FILE does not exist.\n"
+        echo -e "Creating $FILE please wait\n"
+        echo -e "Log Type\tTime Created\tType\tSize" > /var/www/html/inventory.html
+        echo -e "$FILE created"
+fi
+#Gathering value to input in inventory file
+>>>>>>> a5a34ec5fe2c1a4a4d0e93eb55bc694b88a3dce8
 
 s=`ls -ltrh /tmp/*.tar| grep -i "$timestamp" | awk '{print $5}'`
 lt=`ls -ltrh /tmp/*.tar |grep -i "$timestamp"| awk -F "/" '{print $3}' | awk -F "-" '{print $2 "-" $3}'`
 dc=`ls -ltrh /tmp/*.tar |grep -i "$timestamp"| awk -F "/" '{print $3}' | awk -F "-" '{print $4 "-" $5}'| awk -F "." '{print $1}'`
 ft=`ls -ltrh /tmp/*.tar |grep -i "$timestamp"| awk -F "/" '{print $3}' | awk -F "-" '{print $4 "-" $5}'| awk -F "." '{print $2}'`
 echo -e "$lt\t$dc\t$ft\t$s" >> /var/www/html/inventory.html
+<<<<<<< HEAD
 
 #Creating cron entries
 CFILE=automation
@@ -98,3 +120,5 @@ else
 fi
 
 echo -e "TASK 3 completed. Exiting the script. Thank you !!!"
+=======
+>>>>>>> a5a34ec5fe2c1a4a4d0e93eb55bc694b88a3dce8
