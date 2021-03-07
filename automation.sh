@@ -13,7 +13,8 @@ echo -e "Updating Packages \n"
 apt update -y &> /dev/null
 echo -e "Update Completed \n"
 
-#Installing Apache2 and enabling service
+#Installing Apache2 
+
 if [ "$srv_apache" = "ii" ]
 then
 	echo -e "Apache already exist .......... PASS\n"
@@ -78,23 +79,7 @@ else
 	echo -e "Log Type\tTime Created\tType\tSize" > /var/www/html/inventory.html
 	echo -e "$FILE created \n"
 fi
-#Sending file to S3 bucket and removing fro /tmp
-echo -e "Sending log tar to S3\n"
-aws s3 cp /tmp/${myname}-httpd-logs-${timestamp}.tar s3://${s3_bucket}/${myname}-httpd-logs-${timestamp}.tar
-echo -e "\nTar log copied to S3.......PASS\n"
-#echo -e "All task completed. Exiting the script. Thank you !!!"
-#Checking if inventory.html is present in /var/www/html. If not create file with headers.
 
-FILE=inventory.html
-if [ -f /var/www/html/inventory.html ]
-then
-        echo "$FILE exist."
-else
-        echo -e "$FILE does not exist.\n"
-        echo -e "Creating $FILE please wait\n"
-        echo -e "Log Type\tTime Created\tType\tSize" > /var/www/html/inventory.html
-        echo -e "$FILE created"
-fi
 #Gathering value to input in inventory file
 
 s=`ls -ltrh /tmp/*.tar| grep -i "$timestamp" | awk '{print $5}'`
@@ -111,8 +96,8 @@ then
 else
         echo -e "$CFILE does not exist crontab.\n"
         echo -e "Creating $CFILE please wait\n"
-	echo "* * 1 * * root /root/Automation_Project/automation.sh" > /etc/cron.d/automation
+	echo "00 01 * * * root /root/Automation_Project/automation.sh" > /etc/cron.d/automation
 	echo -e "$CFILE created in crontab and scheduled job.\n"
 fi
 
-echo -e "TASK 3 completed. Exiting the script. Thank you !!!"
+echo -e "TASK 3 completed. Exiting the script.Thank you !!!"
